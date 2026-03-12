@@ -20,11 +20,6 @@ const linkSchema = new mongoose.Schema(
       required: true,
     },
 
-    order: {
-      type: Number,
-      default: 0,
-    },
-
     clicks: {
       type: Number,
       default: 0,
