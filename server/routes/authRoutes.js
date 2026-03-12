@@ -7,6 +7,6 @@ router.post("/auth/register", register);
 router.post("/auth/login", login);
 
 // Protected route (requires auth middleware)
-// router.get("/profile", protect, getProfile); 
+// router.get("/profile", protect, getProfile);
 
 module.exports = router;
