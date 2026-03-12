@@ -5,6 +5,7 @@ const connectDB = require("./config/db");
 const authRoute = require('./routes/authRoutes')
 const linkRoutes = require('./routes/linkRoutes')
 const protect = require('./middleware/authMiddleware')
+const linksRoutes = require('./routes/linkRoutes')
 require("dotenv").config(); // Load environment variables from .env file
 
 // CONNECTING TO MONGODB
@@ -20,7 +21,8 @@ app.get("/api", (req, res) => {
 
 // ROUTES
 app.use('/api', authRoute)
-app.use("/api/links",protect, linkRoutes);
+app.use("/api/link",protect, linkRoutes);
+app.use("/api/links",protect, linksRoutes);
 
 // CREATE SERVER
 const port = process.env.PORT;
