@@ -42,4 +42,24 @@ const getUserLinks = async (req, res) => {
   }
 };
 
-module.exports = { createLink, getUserLinks };
+const deleteUserLink = async (req, res) => {
+  try {
+
+    const link = await Link.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.user._id
+    });
+
+    res.status(200).json({
+      status: "success",
+      link
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
+module.exports = { createLink, getUserLinks, deleteUserLink };
