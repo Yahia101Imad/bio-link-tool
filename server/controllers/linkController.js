@@ -16,7 +16,6 @@ const createLink = async (req, res) => {
       message: "Link created successfully",
       link: newLink,
     });
-
   } catch (error) {
     res.status(500).json({
       message: "Server error",
@@ -26,15 +25,14 @@ const createLink = async (req, res) => {
 
 const getUserLinks = async (req, res) => {
   try {
-    const userLinks = await Link.find({userId: req.user._id});
+    const userLinks = await Link.find({ userId: req.user._id });
 
     res.status(200).json({
       status: "success",
       data: {
-        userLinks
+        userLinks,
       },
     });
-
   } catch (error) {
     res.status(500).json({
       message: "Server error",
@@ -44,17 +42,15 @@ const getUserLinks = async (req, res) => {
 
 const deleteUserLink = async (req, res) => {
   try {
-
     const link = await Link.findOneAndDelete({
       _id: req.params.id,
-      userId: req.user._id
+      userId: req.user._id,
     });
 
     res.status(200).json({
       status: "success",
-      link
+      link,
     });
-
   } catch (error) {
     res.status(500).json({
       message: "Server error",

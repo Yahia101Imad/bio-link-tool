@@ -7,5 +7,4 @@ router.post("/", createLink);
 router.get("/", getUserLinks);
 router.delete("/:id", deleteUserLink);
 
-
 module.exports = router;
