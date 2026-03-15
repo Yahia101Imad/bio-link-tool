@@ -8,7 +8,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/register" element={<RegisterLoginPage />} />
+        <Route path="/registerLogin" element={<RegisterLoginPage />} />
         {/* <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/:username" element={<PublicProfilePage />} /> */}
