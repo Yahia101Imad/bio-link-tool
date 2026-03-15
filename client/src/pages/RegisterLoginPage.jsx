@@ -59,11 +59,7 @@ export default function LoginRegister() {
 
         {/* RIGHT SIDE - Panel */}
         <div
-          className={`flex justify-center items-center text-white text-center transition-colors duration-500 ${
-            signIn
-              ? "bg-gradient-to-tr from-primary to-primaryDark"
-              : "bg-gradient-to-tr from-secondary to-secondaryDark"
-          }`}
+          className="flex justify-center items-center text-white text-center transition-colors duration-500 bg-gradient-to-tr from-primary to-primaryDark"
         >
           <div>
             <h3 className="text-xl font-semibold">
