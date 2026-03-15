@@ -3,7 +3,6 @@ import InputField from "../components/inputField";
 
 export default function LoginRegister() {
   const [signIn, setSignIn] = useState(true);
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,6 +25,7 @@ export default function LoginRegister() {
               onChange={(e) => setName(e.target.value)}
             />
           )}
+
           <InputField
             label="Email"
             type="email"
@@ -33,6 +33,7 @@ export default function LoginRegister() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
+
           <InputField
             label="Password"
             type="password"
@@ -41,9 +42,7 @@ export default function LoginRegister() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button
-            className="mt-6 bg-primary hover:bg-primaryDark text-white py-2 rounded transition-colors"
-          >
+          <button className="mt-6 bg-primary hover:bg-primaryDark text-white py-2 rounded transition-colors">
             {signIn ? "Sign In" : "Register"}
           </button>
 
