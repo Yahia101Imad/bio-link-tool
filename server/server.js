@@ -5,10 +5,17 @@ const connectDB = require("./config/db");
 const authRoute = require('./routes/authRoutes')
 const linkRoutes = require('./routes/linkRoutes')
 const protect = require('./middleware/authMiddleware')
+const cors = require("cors");
 require("dotenv").config(); // Load environment variables from .env file
 
 // CONNECTING TO MONGODB
 connectDB();
+
+// ACTIVATING CORS FOR EVERYONE
+app.use(cors());
+
+// ALLOWING REACT WITH THIS URL TO ACCESS CORS
+app.use(cors({ origin: "http://localhost:5173" }));
 
 // ACTIVATING MAIN APP FOR REQUESTING ROUTES
 app.use(express.json());
