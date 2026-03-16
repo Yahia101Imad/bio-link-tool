@@ -1,11 +1,13 @@
 import { useState } from "react";
 import InputField from "../components/inputField";
 import { registerUser } from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -18,7 +20,10 @@ export default function Register() {
       });
 
       console.log(res.data);
-      // HERE SENDING USER TO NEXT PAGE "DASHBOARD" AND SHOWING REGISTRATION DONE
+
+      // HERE SENDING USER TO NEXT PAGE "DASHBOARD"
+      navigate("/dashboard");
+
     } catch (error) {
       console.error(error);
     }
@@ -32,9 +37,7 @@ export default function Register() {
       >
         {/* LEFT SIDE - Form */}
         <div className="p-8 flex flex-col justify-center">
-          <h2 className="text-2xl font-bold mb-6 text-primaryDark">
-            Register
-          </h2>
+          <h2 className="text-2xl font-bold mb-6 text-primaryDark">Register</h2>
 
           <InputField
             label="Name"
@@ -71,9 +74,7 @@ export default function Register() {
         <div className="flex justify-center items-center text-white text-center bg-gradient-to-tr from-primary to-primaryDark p-6">
           <div>
             <h3 className="text-xl font-semibold">Join Us Today!</h3>
-            <p className="mt-2 text-sm">
-              Register to get started with us
-            </p>
+            <p className="mt-2 text-sm">Register to get started with us</p>
           </div>
         </div>
       </form>

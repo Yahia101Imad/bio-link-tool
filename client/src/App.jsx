@@ -10,8 +10,8 @@ function App() {
       <Routes>
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
-        {/* <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/:username" element={<PublicProfilePage />} /> */}
+        <Route path="/dashboard" element={<DashboardPage />} />
+        {/* <Route path="/:username" element={<PublicProfilePage />} /> */}
       </Routes>
     </Router>
   );

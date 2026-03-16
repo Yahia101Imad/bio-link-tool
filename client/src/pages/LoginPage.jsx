@@ -1,18 +1,24 @@
 import { useState } from "react";
 import InputField from "../components/inputField";
 import { loginUser } from "../services/api";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate()
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
       const res = await loginUser({ email, password });
+
       console.log(res.data);
-      // HERE SENDING USER TO NEXT PAGE "DASHBOARD" AND SHOWING REGISTRATION DONE
+      // HERE SENDING USER TO NEXT PAGE "DASHBOARD"
+      navigate('/dashboard')
+      
     } catch (error) {
       console.error(error);
     }
