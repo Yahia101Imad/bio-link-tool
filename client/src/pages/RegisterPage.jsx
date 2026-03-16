@@ -19,11 +19,14 @@ export default function Register() {
         password,
       });
 
-      console.log(res.data);
+      // console.log(res.data);
+
+      // SAVE TOKEN IN LOCALSTORAGE
+      localStorage.setItem("token", res.data.token);
 
       // HERE SENDING USER TO NEXT PAGE "DASHBOARD"
       navigate("/dashboard");
-
+      
     } catch (error) {
       console.error(error);
     }
