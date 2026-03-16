@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import API from "../services/api";
 
 export default function Dashboard() {
   const [title, setTitle] = useState("");
@@ -7,12 +7,21 @@ export default function Dashboard() {
   const [links, setLinks] = useState([]);
 
   // GET USER LINKS
+  //   const fetchLinks = async () => {
+  //     try {
+  //       const res = await axios.get("/api/links");
+  //       setLinks(res.data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
   const fetchLinks = async () => {
     try {
-      const res = await axios.get("/api/links");
+      const res = await API.get("/links"); // سيضيف التوكن تلقائيًا
       setLinks(res.data);
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -29,10 +38,7 @@ export default function Dashboard() {
     e.preventDefault();
 
     try {
-      await axios.post("/api/links", {
-        title,
-        url,
-      });
+      await API.post("/links", { title, url }); // Authorization header included
 
       setTitle("");
       setUrl("");
@@ -46,7 +52,7 @@ export default function Dashboard() {
   // DELETE LINK
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/links/${id}`);
+      await API.delete(`/links/${id}`);
       fetchLinks();
     } catch (error) {
       console.log(error);

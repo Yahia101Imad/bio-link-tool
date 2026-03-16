@@ -27,12 +27,7 @@ const getUserLinks = async (req, res) => {
   try {
     const userLinks = await Link.find({ userId: req.user._id });
 
-    res.status(200).json({
-      status: "success",
-      data: {
-        userLinks,
-      },
-    });
+    res.status(200).json(userLinks);
   } catch (error) {
     res.status(500).json({
       message: "Server error",
