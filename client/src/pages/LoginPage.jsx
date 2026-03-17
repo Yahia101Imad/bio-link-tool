@@ -19,6 +19,7 @@ export default function Login() {
       
       // SAVE TOKEN IN LOCALSTORAGE
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("username", res.data.data.user.username);
       
       // HERE SENDING USER TO NEXT PAGE "DASHBOARD"
       navigate('/dashboard')

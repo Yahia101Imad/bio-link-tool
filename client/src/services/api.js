@@ -8,6 +8,7 @@ const API = axios.create({
 // CONNECTING API WITH PAGES
 export const registerUser = (data) => API.post("/auth/register", data);
 export const loginUser = (data) => API.post("/auth/login", data);
+export const getUserProfile = (username) => API.get(`/profile/${username}`);
 
 // SAVE TOKEN IN LOCALSTORAGE AFTER POSTING REQUEST
 API.interceptors.request.use((req) => {

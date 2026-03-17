@@ -15,7 +15,10 @@ connectDB();
 app.use(cors());
 
 // ALLOWING REACT WITH THIS URL TO ACCESS CORS
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({
+  origin: "http://localhost:5173", // React
+  credentials: true
+}));
 
 // ACTIVATING MAIN APP FOR REQUESTING ROUTES
 app.use(express.json());

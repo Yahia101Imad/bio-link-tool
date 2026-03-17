@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import API from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
   const [links, setLinks] = useState([]);
+  const navigate = useNavigate();
 
   // GET USER LINKS
   //   const fetchLinks = async () => {
@@ -59,6 +61,20 @@ export default function Dashboard() {
     }
   };
 
+  // DELETE LINK
+  const handleViewProfile = async () => {
+    try {
+      const username = localStorage.getItem("username");
+      if (!username) return;
+
+      // HERE SENDING USER TO NEXT PAGE "DASHBOARD"
+      navigate(`/${username}`);
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="max-w-3xl mx-auto p-6">
       {/* Navbar */}
@@ -66,7 +82,7 @@ export default function Dashboard() {
         <h1 className="text-xl font-bold">Dashboard</h1>
 
         <div className="flex gap-4">
-          <a href="/profile/yahia" className="text-blue-500">
+          <a onClick={handleViewProfile} className="text-blue-500">
             View Profile
           </a>
 
