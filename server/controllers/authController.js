@@ -1,7 +1,8 @@
 // IMPORT PACKAGES
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-const Link = require('../models/Link')
+const Link = require("../models/Link");
+const AppError = require("../utils/AppError");
 
 // GENERATE A JWT TOKEN
 const createToken = (id) => {
@@ -25,9 +26,9 @@ const register = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(400).json({
-      status: "fail",
-      error: error.message,
+    res.status(error.statusCode || 500).json({
+      status: error.status || "fail",
+      message: error.message,
     });
   }
 };
@@ -38,13 +39,16 @@ const login = async (req, res) => {
     //FIND USER BY EMAIL
     const user = await User.findOne({ email });
     if (!user) {
-      throw new Error("Incorrect email");
+      throw new AppError("Incorrect email", 400);
     }
 
     // CHECK IF PASSWORD IS CORRECT
-    const isPasswordCorrect = await user.correctPassword(password, user.password)
+    const isPasswordCorrect = await user.correctPassword(
+      password,
+      user.password,
+    );
     if (!isPasswordCorrect) {
-      throw new Error("Incorrect password");
+      throw new AppError("Incorrect password", 400);
     }
 
     // CREATING TOKEN
@@ -58,9 +62,9 @@ const login = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(400).json({
-      status: "fail",
-      error: error.message,
+    res.status(error.statusCode || 500).json({
+      status: error.status || "fail",
+      message: error.message,
     });
   }
 };
@@ -72,13 +76,10 @@ const getProfile = async (req, res) => {
 
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(404).json({
-        status: "fail",
-        message: "User not found",
-      });
+      throw new AppError("User not found", 404);
     }
 
-    const links = await Link.find({ userId: user._id })
+    const links = await Link.find({ userId: user._id });
 
     res.status(200).json({
       status: "success",
@@ -92,9 +93,9 @@ const getProfile = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({
-      status: "fail",
-      message: "Server error",
+    res.status(error.statusCode || 500).json({
+      status: error.status || "fail",
+      message: error.message,
     });
   }
 };

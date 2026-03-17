@@ -17,8 +17,9 @@ const createLink = async (req, res) => {
       link: newLink,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Server error",
+    res.status(error.statusCode || 500).json({
+      status: error.status || "fail",
+      message: error.message,
     });
   }
 };
@@ -29,8 +30,9 @@ const getUserLinks = async (req, res) => {
 
     res.status(200).json(userLinks);
   } catch (error) {
-    res.status(500).json({
-      message: "Server error",
+    res.status(error.statusCode || 500).json({
+      status: error.status || "fail",
+      message: error.message,
     });
   }
 };
@@ -47,8 +49,9 @@ const deleteUserLink = async (req, res) => {
       link,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Server error",
+    res.status(error.statusCode || 500).json({
+      status: error.status || "fail",
+      message: error.message,
     });
   }
 };
