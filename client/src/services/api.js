@@ -1,5 +1,5 @@
 import axios from "axios";
-import AppError from '../../../server/utils/AppError'
+import AppError from '../utils/AppError'
 
 // CRESTING BASE URL WITH AXIOS
 const API = axios.create({
