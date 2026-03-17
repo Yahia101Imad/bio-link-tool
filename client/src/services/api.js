@@ -1,4 +1,5 @@
 import axios from "axios";
+import AppError from '../../../server/utils/AppError'
 
 // CRESTING BASE URL WITH AXIOS
 const API = axios.create({
@@ -18,5 +19,16 @@ API.interceptors.request.use((req) => {
   }
   return req;
 });
+
+// MANAGING RESPONSE ERRORS
+API.interceptors.response.use(
+  res => res,
+  err => {
+    const message =
+      err.response?.data?.message || err.message || "Something went wrong";
+    const status = err.response?.status || 500;
+    return Promise.reject(new AppError(message, status));
+  }
+);
 
 export default API;
