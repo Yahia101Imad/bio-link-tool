@@ -1,14 +1,18 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Home() {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
-  }, []);
+  // THIS CODE CAUSED EXHAUSTIVE-DEPS WARNING (REPLACED WITH THE LINE CODE BELOW)
+  //   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  //   useEffect(() => {
+  //     const token = localStorage.getItem("token");
+  //     setIsLoggedIn(!!token);
+  //   }, []);
+
+  const [isLoggedIn] = useState(() => !!localStorage.getItem("token"));
 
   const handleGetStarted = () => {
     if (isLoggedIn) {
@@ -20,7 +24,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-
       {/* Navbar */}
       <nav className="flex justify-between items-center px-6 py-4 shadow-sm">
         <h1 className="text-xl font-bold">BioLink</h1>
@@ -42,13 +45,13 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="flex flex-col items-center justify-center text-center mt-24 px-6">
-
         <h1 className="text-4xl md:text-5xl font-bold max-w-2xl">
           Share all your links in one place
         </h1>
 
         <p className="text-gray-500 mt-4 max-w-md">
-          Create your personal bio link page and share it anywhere. Simple, fast, and clean.
+          Create your personal bio link page and share it anywhere. Simple,
+          fast, and clean.
         </p>
 
         <button
@@ -57,30 +60,21 @@ export default function Home() {
         >
           Get Started
         </button>
-
       </section>
 
       {/* Features */}
       <section className="mt-32 px-6">
-
-        <h2 className="text-2xl font-bold text-center">
-          Features
-        </h2>
+        <h2 className="text-2xl font-bold text-center">Features</h2>
 
         <div className="grid md:grid-cols-3 gap-6 mt-10 max-w-5xl mx-auto">
-
           <div className="p-6 border rounded-xl text-center shadow-sm">
             <h3 className="font-semibold text-lg">Unlimited Links</h3>
-            <p className="text-gray-500 mt-2">
-              Add as many links as you want.
-            </p>
+            <p className="text-gray-500 mt-2">Add as many links as you want.</p>
           </div>
 
           <div className="p-6 border rounded-xl text-center shadow-sm">
             <h3 className="font-semibold text-lg">Clean Design</h3>
-            <p className="text-gray-500 mt-2">
-              Minimal and modern UI.
-            </p>
+            <p className="text-gray-500 mt-2">Minimal and modern UI.</p>
           </div>
 
           <div className="p-6 border rounded-xl text-center shadow-sm">
@@ -89,16 +83,13 @@ export default function Home() {
               Share your profile with one link.
             </p>
           </div>
-
         </div>
-
       </section>
 
       {/* Footer */}
       <footer className="mt-32 text-center text-gray-400 pb-6">
         © {new Date().getFullYear()} BioLink. All rights reserved.
       </footer>
-
     </div>
   );
 }
