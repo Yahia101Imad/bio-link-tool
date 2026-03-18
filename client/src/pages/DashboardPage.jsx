@@ -8,26 +8,15 @@ export default function Dashboard() {
   const [links, setLinks] = useState([]);
   const navigate = useNavigate();
 
-  // GET USER LINKS
-  //   const fetchLinks = async () => {
-  //     try {
-  //       const res = await axios.get("/api/links");
-  //       setLinks(res.data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
   const fetchLinks = async () => {
     try {
-      const res = await API.get("/links"); // سيضيف التوكن تلقائيًا
+      const res = await API.get("/links");
       setLinks(res.data);
     } catch (err) {
       console.log(err);
     }
   };
 
-  // FETCH USER LINKS ASYNCROUNESLY WHILE RENDERING THE PAGE
   useEffect(() => {
     const fetchData = async () => {
       await fetchLinks();
@@ -35,23 +24,21 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  // ADD LINK
   const handleAddLink = async (e) => {
     e.preventDefault();
 
     try {
-      await API.post("/links", { title, url }); // Authorization header included
+      await API.post("/links", { title, url });
 
       setTitle("");
       setUrl("");
 
-      fetchLinks(); // UPDATING LINKS
+      fetchLinks();
     } catch (error) {
       console.log(error);
     }
   };
 
-  // DELETE LINK
   const handleDelete = async (id) => {
     try {
       await API.delete(`/links/${id}`);
@@ -61,32 +48,29 @@ export default function Dashboard() {
     }
   };
 
-  // DELETE LINK
   const handleViewProfile = async () => {
     try {
       const username = localStorage.getItem("username");
       if (!username) return;
 
-      // HERE SENDING USER TO NEXT PAGE "DASHBOARD"
       navigate(`/${username}`);
-
     } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="max-w-3xl mx-auto p-6 bg-background text-primary">
       {/* Navbar */}
-      <div className="flex justify-between items-center mb-8 border-b pb-4">
+      <div className="flex justify-between items-center mb-8 border-b border-border pb-4">
         <h1 className="text-xl font-bold">Dashboard</h1>
 
         <div className="flex gap-4">
-          <a onClick={handleViewProfile} className="text-blue-500">
+          <a onClick={handleViewProfile} className="text-secondary cursor-pointer">
             View Profile
           </a>
 
-          <button className="text-red-500">Logout</button>
+          <button className="text-secondary">Logout</button>
         </div>
       </div>
 
@@ -97,7 +81,7 @@ export default function Dashboard() {
           placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="border p-2 rounded"
+          className="border border-border p-2 rounded bg-background"
         />
 
         <input
@@ -105,10 +89,10 @@ export default function Dashboard() {
           placeholder="URL"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className="border p-2 rounded"
+          className="border border-border p-2 rounded bg-background"
         />
 
-        <button type="submit" className="bg-black text-white p-2 rounded">
+        <button type="submit" className="bg-primary text-white p-2 rounded">
           Add Link
         </button>
       </form>
@@ -116,19 +100,19 @@ export default function Dashboard() {
       {/* Links List */}
       <div className="flex flex-col gap-4">
         {links.length === 0 ? (
-          <div>You don't have any links yet</div>
+          <div className="text-secondary">You don't have any links yet</div>
         ) : (
           links.map((link) => (
             <div
               key={link._id}
-              className="border p-4 rounded flex justify-between items-center"
+              className="border border-border p-4 rounded flex justify-between items-center bg-background-alt"
             >
               <div>
-                <h3 className="font-semibold">{link.title}</h3>
+                <h3 className="font-semibold text-primary">{link.title}</h3>
 
                 <a
                   href={link.url}
-                  className="text-blue-500 text-sm"
+                  className="text-secondary text-sm"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -137,11 +121,11 @@ export default function Dashboard() {
               </div>
 
               <div className="flex gap-3">
-                <button className="text-yellow-600">Edit</button>
+                <button className="text-secondary">Edit</button>
 
                 <button
                   onClick={() => handleDelete(link._id)}
-                  className="text-red-600"
+                  className="text-secondary"
                 >
                   Delete
                 </button>

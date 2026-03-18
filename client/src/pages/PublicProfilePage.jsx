@@ -16,8 +16,6 @@ export default function PublicProfilePage() {
         setLoading(true);
 
         const res = await getUserProfile(username);
-        // console.log(res);
-        // console.log("get links: " + res.data.links);
         setUser(res.data.data.user);
         setLinks(res.data.data.links);
       } catch (err) {
@@ -31,42 +29,38 @@ export default function PublicProfilePage() {
     fetchProfile();
   }, [username]);
 
-  // 🔄 Loading
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Loading...</p>
+      <div className="min-h-screen flex items-center justify-center bg-background-alt">
+        <p className="text-secondary">Loading...</p>
       </div>
     );
   }
 
-  // ❌ Error
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-red-500">{error}</p>
+      <div className="min-h-screen flex items-center justify-center bg-background-alt">
+        <p className="text-secondary">{error}</p>
       </div>
     );
   }
 
-  //   console.log(links)
-
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-gray-50">
-      {/* 🔥 Profile Card */}
-      <div className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-md text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-background-alt text-primary">
+      {/* Profile Card */}
+      <div className="bg-background shadow-md rounded-2xl p-6 w-full max-w-md text-center border border-border">
         {/* Avatar */}
         <img
           src={user?.avatar || "https://via.placeholder.com/100"}
           alt="avatar"
-          className="w-24 h-24 rounded-full mx-auto object-cover border"
+          className="w-24 h-24 rounded-full mx-auto object-cover border border-border"
         />
 
         {/* Username */}
-        <h1 className="text-2xl font-bold mt-4">@{user?.username}</h1>
+        <h1 className="text-2xl font-bold mt-4 text-primary">@{user?.username}</h1>
 
         {/* Bio */}
-        <p className="text-gray-500 mt-2">{user?.bio || "No bio available"}</p>
+        <p className="text-secondary mt-2">{user?.bio || "No bio available"}</p>
 
         {/* Links */}
         <div className="mt-6 space-y-3">
@@ -77,13 +71,13 @@ export default function PublicProfilePage() {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition"
+                className="block w-full bg-primary text-white py-3 rounded-lg hover:bg-primary-light transition"
               >
                 {link.title}
               </a>
             ))
           ) : (
-            <p className="text-gray-400">No links yet</p>
+            <p className="text-secondary">No links yet</p>
           )}
         </div>
       </div>
