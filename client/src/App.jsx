@@ -3,6 +3,7 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import PublicProfilePage from "./pages/PublicProfilePage";
+import Home from './pages/Home'
 import ErrorBoundary from './components/ErrorBoundary'
 
 function App() {
@@ -14,6 +15,8 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/:username" element={<PublicProfilePage />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
         </ErrorBoundary>
       </Routes>
     </Router>
