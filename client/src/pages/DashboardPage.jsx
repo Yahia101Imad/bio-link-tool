@@ -136,6 +136,16 @@ export default function Dashboard() {
     }
   };
 
+  // Logout handler
+const handleLogout = () => {
+  // 1. REMOVE DATA FROM LOCALSTORAGE
+  localStorage.removeItem("username");
+  localStorage.removeItem("token");
+
+  // 2. REDIRECTING INTO THE LOGIN PAGE
+  navigate("/login");
+};
+
   return (
     <div className="max-w-3xl mx-auto p-6 bg-background text-primary">
       {/* Toast */}
@@ -225,7 +235,7 @@ export default function Dashboard() {
           >
             View Profile
           </a>
-          <button className="text-secondary">Logout</button>
+          <button onClick={handleLogout} className="text-red-600">Logout</button>
         </div>
       </div>
 
