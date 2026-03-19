@@ -7,6 +7,12 @@ export default function Dashboard() {
   const [url, setUrl] = useState("");
   const [links, setLinks] = useState([]);
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editData, setEditData] = useState({
+    id: "",
+    title: "",
+    url: "",
+  });
 
   const fetchLinks = async () => {
     try {
@@ -59,14 +65,75 @@ export default function Dashboard() {
     }
   };
 
+  const handleUpdate = async () => {
+    try {
+      await API.put(`/links/${editData.id}`, {
+        title: editData.title,
+        url: editData.url,
+      });
+
+      setIsModalOpen(false);
+      fetchLinks();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="max-w-3xl mx-auto p-6 bg-background text-primary">
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-primary/50 flex items-center justify-center z-50">
+          <div className="bg-background p-6 rounded-xl w-96 shadow-lg">
+            <h2 className="text-xl font-bold mb-4">Edit Link</h2>
+
+            <input
+              type="text"
+              value={editData.title}
+              onChange={(e) =>
+                setEditData({ ...editData, title: e.target.value })
+              }
+              className="w-full border p-2 rounded mb-3"
+              placeholder="Title"
+            />
+
+            <input
+              type="text"
+              value={editData.url}
+              onChange={(e) =>
+                setEditData({ ...editData, url: e.target.value })
+              }
+              className="w-full border p-2 rounded mb-4"
+              placeholder="URL"
+            />
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-secondary"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleUpdate}
+                className="bg-primary text-background px-4 py-1 rounded"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Navbar */}
       <div className="flex justify-between items-center mb-8 border-b border-border pb-4">
         <h1 className="text-xl font-bold">Dashboard</h1>
 
         <div className="flex gap-4">
-          <a onClick={handleViewProfile} className="text-secondary cursor-pointer">
+          <a
+            onClick={handleViewProfile}
+            className="text-secondary cursor-pointer"
+          >
             View Profile
           </a>
 
@@ -121,7 +188,19 @@ export default function Dashboard() {
               </div>
 
               <div className="flex gap-3">
-                <button className="text-secondary">Edit</button>
+                <button
+                  className="text-secondary"
+                  onClick={() => {
+                    setEditData({
+                      id: link._id,
+                      title: link.title,
+                      url: link.url,
+                    });
+                    setIsModalOpen(true);
+                  }}
+                >
+                  Edit
+                </button>
 
                 <button
                   onClick={() => handleDelete(link._id)}

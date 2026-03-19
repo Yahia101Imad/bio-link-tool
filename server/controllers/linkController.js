@@ -56,4 +56,41 @@ const deleteUserLink = async (req, res) => {
   }
 };
 
-module.exports = { createLink, getUserLinks, deleteUserLink };
+const updateLink = async (req, res, next) => {
+  try {
+    const { title, url } = req.body;
+    const { id } = req.params;
+
+    // ✅ تحقق من المدخلات
+    if (!title || !url) {
+      return next(new AppError("Title and URL are required", 400));
+    }
+
+    // ✅ تحديث الرابط
+    const updatedLink = await Link.findByIdAndUpdate(
+      id,
+      { title, url },
+      {
+        new: true, // يرجع الداتا بعد التحديث
+        runValidators: true, // يشغل validation
+      }
+    );
+
+    // ❌ إذا لم يوجد
+    if (!updatedLink) {
+      return next(new AppError("Link not found", 404));
+    }
+
+    // ✅ نجاح
+    res.status(200).json({
+      status: "success",
+      data: {
+        link: updatedLink,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createLink, getUserLinks, deleteUserLink, updateLink };
