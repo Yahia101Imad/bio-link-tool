@@ -50,7 +50,7 @@ export default function Register() {
     <div className="min-h-screen flex items-center justify-center bg-background-alt">
       <form
         onSubmit={handleRegister}
-        className="w-full max-w-2xl bg-background rounded-xl shadow-md border border-border overflow-hidden grid grid-cols-2"
+        className="w-full max-w-2xl bg-background rounded-xl shadow-md border border-border overflow-hidden grid grid-cols-1 xs:grid-cols-2"
       >
         {/* LEFT SIDE */}
         <div className="p-8 flex flex-col justify-center">
@@ -115,7 +115,7 @@ export default function Register() {
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="flex justify-center items-center bg-primary text-white p-6">
+        <div className="hidden xs:flex justify-center items-center bg-primary text-white p-6">
           <div className="text-center">
             <h3 className="text-xl font-semibold">Join Us 🚀</h3>
             <p className="mt-2 text-sm text-background">

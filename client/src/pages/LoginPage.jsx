@@ -65,7 +65,7 @@ export default function Login() {
       </div>
       <form
         onSubmit={handleLogin}
-        className="w-full max-w-2xl bg-background rounded-xl shadow-md border border-border overflow-hidden grid grid-cols-2"
+        className="w-full max-w-2xl bg-background rounded-xl shadow-md border border-border overflow-hidden grid grid-cols-1 xs:grid-cols-2"
       >
         {/* LEFT SIDE */}
         <div className="p-8 flex flex-col justify-center">
@@ -118,7 +118,7 @@ export default function Login() {
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="flex justify-center items-center bg-primary text-white p-6">
+        <div className="hidden xs:flex justify-center items-center bg-primary text-white p-6">
           <div className="text-center">
             <h3 className="text-xl font-semibold">Hello Again 👋</h3>
             <p className="mt-2 text-sm text-background">
