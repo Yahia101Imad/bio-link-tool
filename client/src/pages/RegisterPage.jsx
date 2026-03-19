@@ -2,6 +2,7 @@ import { useState } from "react";
 import InputField from "../components/inputField";
 import { registerUser } from "../services/api";
 import { useNavigate } from "react-router-dom";
+import DOMPurify from "dompurify";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -13,11 +14,14 @@ export default function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    // Sanitize input
+    const cleanName = DOMPurify.sanitize(name).trim();
+
     // Validation
     let tempErrors = { name: "", email: "", password: "" };
     let hasError = false;
 
-    if (!name.trim()) {
+    if (!cleanName) {
       tempErrors.name = "Name is required";
       hasError = true;
     }
@@ -37,7 +41,11 @@ export default function Register() {
     if (hasError) return;
 
     try {
-      const res = await registerUser({ username: name, email, password });
+      const res = await registerUser({
+        username: cleanName,
+        email,
+        password,
+      });
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("username", res.data.data.user.username);
       navigate("/dashboard");
@@ -54,7 +62,9 @@ export default function Register() {
       >
         {/* LEFT SIDE */}
         <div className="p-8 flex flex-col justify-center">
-          <h2 className="text-2xl font-bold mb-6 text-primary">Create Account</h2>
+          <h2 className="text-2xl font-bold mb-6 text-primary">
+            Create Account
+          </h2>
 
           <div className="mb-4">
             <InputField

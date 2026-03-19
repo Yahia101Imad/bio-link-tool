@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import API from "../services/api";
 import { useNavigate } from "react-router-dom";
 import Toast from "../components/toast";
+import DOMPurify from "dompurify";
 
 export default function Dashboard() {
   const [title, setTitle] = useState("");
@@ -70,18 +71,21 @@ export default function Dashboard() {
     e.preventDefault();
     setUrlError(""); // Reset the Add Form error
 
-    if (!title || !url) {
+    const cleanTitle = DOMPurify.sanitize(title).trim();
+    const cleanUrl = url.trim();
+
+    if (!cleanTitle || !cleanUrl) {
       showToast("Please fill all fields", "warning");
       return;
     }
 
-    if (!isValidURL(url)) {
+    if (!isValidURL(cleanUrl)) {
       setUrlError("URL is invalid. Use https://example.com");
       return;
     }
 
     try {
-      await API.post("/links", { title, url });
+      await API.post("/links", { title: cleanTitle, url: cleanUrl });
       setTitle("");
       setUrl("");
       fetchLinks();
@@ -95,21 +99,25 @@ export default function Dashboard() {
   const handleUpdate = async () => {
     setEditUrlError(""); // Reset Edit Modal error
 
-    if (!editData.title || !editData.url) {
+    const cleanTitle = DOMPurify.sanitize(editData.title).trim();
+    const cleanUrl = editData.url.trim();
+
+    if (!cleanTitle || !cleanUrl) {
       showToast("All fields are required", "warning");
       return;
     }
 
-    if (!isValidURL(editData.url)) {
+    if (!isValidURL(cleanUrl)) {
       setEditUrlError("URL is invalid. Use https://example.com");
       return;
     }
 
     try {
       await API.put(`/links/${editData.id}`, {
-        title: editData.title,
-        url: editData.url,
+        title: cleanTitle,
+        url: cleanUrl,
       });
+
       setIsModalOpen(false);
       fetchLinks();
       showToast("Link updated successfully", "success");
@@ -137,14 +145,14 @@ export default function Dashboard() {
   };
 
   // Logout handler
-const handleLogout = () => {
-  // 1. REMOVE DATA FROM LOCALSTORAGE
-  localStorage.removeItem("username");
-  localStorage.removeItem("token");
+  const handleLogout = () => {
+    // 1. REMOVE DATA FROM LOCALSTORAGE
+    localStorage.removeItem("username");
+    localStorage.removeItem("token");
 
-  // 2. REDIRECTING INTO THE LOGIN PAGE
-  navigate("/login");
-};
+    // 2. REDIRECTING INTO THE LOGIN PAGE
+    navigate("/login");
+  };
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-background text-primary">
@@ -235,7 +243,9 @@ const handleLogout = () => {
           >
             View Profile
           </a>
-          <button onClick={handleLogout} className="text-red-600">Logout</button>
+          <button onClick={handleLogout} className="text-red-600">
+            Logout
+          </button>
         </div>
       </div>
 
