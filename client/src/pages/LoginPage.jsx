@@ -2,6 +2,7 @@ import { useState } from "react";
 import InputField from "../components/inputField";
 import { loginUser } from "../services/api";
 import { useNavigate } from "react-router-dom";
+import Toast from "../components/toast";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -37,11 +38,30 @@ export default function Login() {
       navigate("/dashboard");
     } catch (error) {
       console.error(error);
+      
+      const message = error.message || "Something went wrong";
+      showToast(message, "error");
     }
+  };
+
+  // TOAST
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = "error") => {
+    setToast({ message, type });
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background-alt">
+      <div>
+        {toast && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        )}
+      </div>
       <form
         onSubmit={handleLogin}
         className="w-full max-w-2xl bg-background rounded-xl shadow-md border border-border overflow-hidden grid grid-cols-2"
