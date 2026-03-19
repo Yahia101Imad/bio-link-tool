@@ -8,18 +8,31 @@ export default function Dashboard() {
   const [url, setUrl] = useState("");
   const [links, setLinks] = useState([]);
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editData, setEditData] = useState({
-    id: "",
-    title: "",
-    url: "",
-  });
-  const [toast, setToast] = useState(null);
 
-  const showToast = (message, type = "success") => {
-    setToast({ message, type });
+  const [isModalOpen, setIsModalOpen] = useState(false); // Edit modal
+  const [editData, setEditData] = useState({ id: "", title: "", url: "" });
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Delete confirmation modal
+  const [deleteId, setDeleteId] = useState(null); // ID to delete
+  const [urlError, setUrlError] = useState(""); // Add Form URL error
+  const [editUrlError, setEditUrlError] = useState(""); // Edit Modal URL error
+
+  const [toast, setToast] = useState(null);
+  const showToast = (message, type = "success") => setToast({ message, type });
+
+  // Check url formula with regex
+  const isValidURL = (string) => {
+    const pattern = new RegExp(
+      "^(https?:\\/\\/)" + // http:// or https://
+      "((([a-zA-Z0-9\\-]+\\.)+[a-zA-Z]{2,})|" + // domain...
+      "localhost)" + // ...or localhost
+      "(\\:[0-9]{1,5})?" + // optional port
+      "(\\/.*)?$" // path
+    );
+    return pattern.test(string);
   };
 
+  // Fetch Links
   const fetchLinks = async () => {
     try {
       const res = await API.get("/links");
@@ -30,84 +43,88 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    (async () => {
       await fetchLinks();
-    };
-    fetchData();
+    })();
   }, []);
 
-  const handleViewProfile = async () => {
-    try {
-      const username = localStorage.getItem("username");
-      if (!username) return;
+  // View Profile
+  const handleViewProfile = () => {
+    const username = localStorage.getItem("username");
+    if (!username) return;
+    navigate(`/${username}`);
+  };
 
-      navigate(`/${username}`);
+  // Add Link
+  const handleAddLink = async (e) => {
+    e.preventDefault();
+    setUrlError(""); // Reset the Add Form error
+
+    if (!title || !url) {
+      showToast("Please fill all fields", "warning");
+      return;
+    }
+
+    if (!isValidURL(url)) {
+      setUrlError("URL is invalid. Use https://example.com");
+      return;
+    }
+
+    try {
+      await API.post("/links", { title, url });
+      setTitle("");
+      setUrl("");
+      fetchLinks();
+      showToast("Link added successfully", "success");
     } catch (error) {
-      console.log(error);
+      showToast(error.response?.data?.message || "Failed to add link", "error");
     }
   };
 
-  const handleAddLink = async (e) => {
-  e.preventDefault();
-
-  if (!title || !url) {
-    showToast("Please fill all fields", "warning");
-    return;
-  }
-
-  try {
-    await API.post("/links", { title, url });
-
-    setTitle("");
-    setUrl("");
-
-    fetchLinks();
-    showToast("Link added successfully", "success");
-  } catch (error) {
-    showToast(
-      error.response?.data?.message || "Failed to add link",
-      "error"
-    );
-  }
-};
-
-  const handleDelete = async (id) => {
-  try {
-    await API.delete(`/links/${id}`);
-    fetchLinks();
-
-    showToast("Link deleted successfully", "info");
-  } catch (error) {
-    showToast(
-      error.response?.data?.message || "Delete failed",
-      "error"
-    );
-  }
-};
-
+  // Update Link
   const handleUpdate = async () => {
-  if (!editData.title || !editData.url) {
-    showToast("All fields are required", "warning");
-    return;
-  }
+    setEditUrlError(""); // Reset Edit Modal error
 
-  try {
-    await API.put(`/links/${editData.id}`, {
-      title: editData.title,
-      url: editData.url,
-    });
+    if (!editData.title || !editData.url) {
+      showToast("All fields are required", "warning");
+      return;
+    }
 
-    setIsModalOpen(false);
-    fetchLinks();
+    if (!isValidURL(editData.url)) {
+      setEditUrlError("URL is invalid. Use https://example.com");
+      return;
+    }
 
-    showToast("Link updated successfully ✨", "success");
-  } catch (error) {
-    showToast(
-      error.response?.data?.message || "Update failed",
-      "error"
-    );
-  }
-};
+    try {
+      await API.put(`/links/${editData.id}`, {
+        title: editData.title,
+        url: editData.url,
+      });
+      setIsModalOpen(false);
+      fetchLinks();
+      showToast("Link updated successfully", "success");
+    } catch (error) {
+      showToast(error.response?.data?.message || "Update failed", "error");
+    }
+  };
+
+  // Open Delete Modal
+  const confirmDelete = (id) => {
+    setDeleteId(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  // Delete Link
+  const handleDelete = async () => {
+    try {
+      await API.delete(`/links/${deleteId}`);
+      setIsDeleteModalOpen(false);
+      fetchLinks();
+      showToast("Link deleted successfully", "info");
+    } catch (error) {
+      showToast(error.response?.data?.message || "Delete failed", "error");
+    }
+  };
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-background text-primary">
@@ -119,12 +136,12 @@ export default function Dashboard() {
           onClose={() => setToast(null)}
         />
       )}
-      {/* Modal */}
+
+      {/* Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-primary/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-background p-6 rounded-xl w-96 shadow-lg">
             <h2 className="text-xl font-bold mb-4">Edit Link</h2>
-
             <input
               type="text"
               value={editData.title}
@@ -134,25 +151,25 @@ export default function Dashboard() {
               className="w-full border p-2 rounded mb-3"
               placeholder="Title"
             />
-
             <input
               type="text"
               value={editData.url}
               onChange={(e) =>
                 setEditData({ ...editData, url: e.target.value })
               }
-              className="w-full border p-2 rounded mb-4"
+              className="w-full border p-2 rounded mb-1"
               placeholder="URL"
             />
-
-            <div className="flex justify-end gap-3">
+            {editUrlError && (
+              <span className="text-red-500 text-sm mt-1">{editUrlError}</span>
+            )}
+            <div className="flex justify-end gap-3 mt-3">
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="text-secondary"
               >
                 Cancel
               </button>
-
               <button
                 onClick={handleUpdate}
                 className="bg-primary text-background px-4 py-1 rounded"
@@ -163,10 +180,34 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-background p-6 rounded-xl w-96 shadow-lg text-center">
+            <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
+            <p className="mb-6">Are you sure you want to delete this link?</p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="px-4 py-2 border rounded text-secondary"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Navbar */}
       <div className="flex justify-between items-center mb-8 border-b border-border pb-4">
         <h1 className="text-xl font-bold">Dashboard</h1>
-
         <div className="flex gap-4">
           <a
             onClick={handleViewProfile}
@@ -174,7 +215,6 @@ export default function Dashboard() {
           >
             View Profile
           </a>
-
           <button className="text-secondary">Logout</button>
         </div>
       </div>
@@ -188,7 +228,6 @@ export default function Dashboard() {
           onChange={(e) => setTitle(e.target.value)}
           className="border border-border p-2 rounded bg-background"
         />
-
         <input
           type="text"
           placeholder="URL"
@@ -196,7 +235,7 @@ export default function Dashboard() {
           onChange={(e) => setUrl(e.target.value)}
           className="border border-border p-2 rounded bg-background"
         />
-
+        {urlError && <span className="text-red-500 text-sm mt-1">{urlError}</span>}
         <button type="submit" className="bg-primary text-white p-2 rounded">
           Add Link
         </button>
@@ -214,7 +253,6 @@ export default function Dashboard() {
             >
               <div>
                 <h3 className="font-semibold text-primary">{link.title}</h3>
-
                 <a
                   href={link.url}
                   className="text-secondary text-sm"
@@ -224,7 +262,6 @@ export default function Dashboard() {
                   {link.url}
                 </a>
               </div>
-
               <div className="flex gap-3">
                 <button
                   className="text-secondary"
@@ -239,10 +276,9 @@ export default function Dashboard() {
                 >
                   Edit
                 </button>
-
                 <button
-                  onClick={() => handleDelete(link._id)}
                   className="text-secondary"
+                  onClick={() => confirmDelete(link._id)}
                 >
                   Delete
                 </button>
