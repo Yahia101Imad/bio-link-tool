@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import API from "../services/api";
 import { useNavigate } from "react-router-dom";
+import Toast from "../components/toast";
 
 export default function Dashboard() {
   const [title, setTitle] = useState("");
@@ -13,6 +14,11 @@ export default function Dashboard() {
     title: "",
     url: "",
   });
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+  };
 
   const fetchLinks = async () => {
     try {
@@ -30,30 +36,6 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  const handleAddLink = async (e) => {
-    e.preventDefault();
-
-    try {
-      await API.post("/links", { title, url });
-
-      setTitle("");
-      setUrl("");
-
-      fetchLinks();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await API.delete(`/links/${id}`);
-      fetchLinks();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleViewProfile = async () => {
     try {
       const username = localStorage.getItem("username");
@@ -65,22 +47,78 @@ export default function Dashboard() {
     }
   };
 
-  const handleUpdate = async () => {
-    try {
-      await API.put(`/links/${editData.id}`, {
-        title: editData.title,
-        url: editData.url,
-      });
+  const handleAddLink = async (e) => {
+  e.preventDefault();
 
-      setIsModalOpen(false);
-      fetchLinks();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  if (!title || !url) {
+    showToast("Please fill all fields", "warning");
+    return;
+  }
+
+  try {
+    await API.post("/links", { title, url });
+
+    setTitle("");
+    setUrl("");
+
+    fetchLinks();
+    showToast("Link added successfully", "success");
+  } catch (error) {
+    showToast(
+      error.response?.data?.message || "Failed to add link",
+      "error"
+    );
+  }
+};
+
+  const handleDelete = async (id) => {
+  try {
+    await API.delete(`/links/${id}`);
+    fetchLinks();
+
+    showToast("Link deleted successfully", "info");
+  } catch (error) {
+    showToast(
+      error.response?.data?.message || "Delete failed",
+      "error"
+    );
+  }
+};
+
+  const handleUpdate = async () => {
+  if (!editData.title || !editData.url) {
+    showToast("All fields are required", "warning");
+    return;
+  }
+
+  try {
+    await API.put(`/links/${editData.id}`, {
+      title: editData.title,
+      url: editData.url,
+    });
+
+    setIsModalOpen(false);
+    fetchLinks();
+
+    showToast("Link updated successfully ✨", "success");
+  } catch (error) {
+    showToast(
+      error.response?.data?.message || "Update failed",
+      "error"
+    );
+  }
+};
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-background text-primary">
+      {/* Toast */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-primary/50 flex items-center justify-center z-50">
