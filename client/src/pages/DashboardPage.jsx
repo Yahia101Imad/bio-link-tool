@@ -20,14 +20,16 @@ export default function Dashboard() {
   const [toast, setToast] = useState(null);
   const showToast = (message, type = "success") => setToast({ message, type });
 
+  const [profileLink, setProfileLink] = useState(""); // User profile link
+
   // Check url formula with regex
   const isValidURL = (string) => {
     const pattern = new RegExp(
       "^(https?:\\/\\/)" + // http:// or https://
-      "((([a-zA-Z0-9\\-]+\\.)+[a-zA-Z]{2,})|" + // domain...
-      "localhost)" + // ...or localhost
-      "(\\:[0-9]{1,5})?" + // optional port
-      "(\\/.*)?$" // path
+        "((([a-zA-Z0-9\\-]+\\.)+[a-zA-Z]{2,})|" + // domain...
+        "localhost)" + // ...or localhost
+        "(\\:[0-9]{1,5})?" + // optional port
+        "(\\/.*)?$", // path
     );
     return pattern.test(string);
   };
@@ -45,8 +47,16 @@ export default function Dashboard() {
   useEffect(() => {
     (async () => {
       await fetchLinks();
+      const username = localStorage.getItem("username");
+      if (username) setProfileLink(`${window.location.origin}/${username}`);
     })();
   }, []);
+
+  // Copy profile link
+  const handleCopyProfileLink = () => {
+    navigator.clipboard.writeText(profileLink);
+    showToast("Profile link copied to clipboard!", "success");
+  };
 
   // View Profile
   const handleViewProfile = () => {
@@ -219,6 +229,44 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Copy Profile Link Field */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-secondary mb-1">
+          Your public profile link
+        </label>
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={profileLink}
+            readOnly
+            className="flex-1 border border-border p-2 rounded-l bg-background text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <button
+            onClick={handleCopyProfileLink}
+            className="flex items-center gap-1 bg-primary text-white px-4 py-2 rounded-r hover:bg-primary/90 transition"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 16h8M8 12h8m-8-4h8M4 6h.01M4 10h.01M4 14h.01M4 18h.01"
+              />
+            </svg>
+            Copy
+          </button>
+        </div>
+        <p className="text-xs text-secondary mt-1">
+          Share this link to let others view your profile and links.
+        </p>
+      </div>
+
       {/* Add Link Form */}
       <form onSubmit={handleAddLink} className="flex flex-col gap-4 mb-10">
         <input
@@ -235,7 +283,9 @@ export default function Dashboard() {
           onChange={(e) => setUrl(e.target.value)}
           className="border border-border p-2 rounded bg-background"
         />
-        {urlError && <span className="text-red-500 text-sm mt-1">{urlError}</span>}
+        {urlError && (
+          <span className="text-red-500 text-sm mt-1">{urlError}</span>
+        )}
         <button type="submit" className="bg-primary text-white p-2 rounded">
           Add Link
         </button>
