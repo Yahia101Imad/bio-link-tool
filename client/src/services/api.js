@@ -3,7 +3,8 @@ import AppError from '../utils/AppError'
 
 // CRESTING BASE URL WITH AXIOS
 const API = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
+  withCredentials: true,
 });
 
 // CONNECTING API WITH PAGES
