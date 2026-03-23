@@ -1,4 +1,3 @@
-
 # 🔗 BioLinkTool
 
 A modern full-stack web application that allows users to create and manage a personalized bio link page.
@@ -31,7 +30,7 @@ A modern full-stack web application that allows users to create and manage a per
 
 ## 🌐 Live Demo
 
-[View Live Project](#)
+[https://bio-link-tool.vercel.app/](#)
 
 ## 💡 About the Project
 
