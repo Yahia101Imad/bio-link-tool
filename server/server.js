@@ -11,12 +11,12 @@ require("dotenv").config(); // Load environment variables from .env file
 // CONNECTING TO MONGODB
 connectDB();
 
-// ACTIVATING CORS FOR EVERYONE
-app.use(cors());
-
 // ALLOWING REACT WITH THIS URL TO ACCESS CORS
 app.use(cors({
-  origin: "http://localhost:5173", // React
+  origin: [
+    "http://localhost:5173",
+    "https://bio-link-tool.vercel.app"
+  ],
   credentials: true
 }));
 
